@@ -1,24 +1,32 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
-import { createStore, applyMiddleware } from "redux";
-import { BrowserRouter } from "react-router-dom";
-import App from "./components/app";
-import reducers from "./reducers";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
-const createStoreWithMiddleware = applyMiddleware()(createStore);
+import thunk from 'redux-thunk';
 
-import "./style/main.scss";
+import reducers from './reducers';
+
+const createStoreWithMiddleware = applyMiddleware(thunk)(compose((window.devToolsExtension ? window.devToolsExtension() : f => f)(createStore)));
+
+import 'bootstrap/dist/css/bootstrap.css';
+import './style/main.scss';
+
+import Home from './components/home';
+import Results from './components/results';
 
 function main() {
   ReactDOM.render(
     <Provider store={createStoreWithMiddleware(reducers)}>
       <BrowserRouter>
-        <App />
+        <Switch>
+            <Route path='/' exact component={Home}/>
+            <Route path='/results' component={Results}/>
+        </Switch>
       </BrowserRouter>
-    </Provider>,
-    document.querySelector(".app-wrapper")
-  );
+    </Provider>
+    , document.querySelector('.app-wrapper'));
 }
 
-document.addEventListener("DOMContentLoaded", main);
+document.addEventListener('DOMContentLoaded', main);
